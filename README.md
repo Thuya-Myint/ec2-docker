@@ -23,7 +23,7 @@ This guide walks you through:
 ## 1) Install the necessary command-line tools (macOS)
 
 You’ll mainly need:
-- **AWS CLI** (optional but helpful for verification/fetching info)
+- **AWS CLI** (optional but helpful)
 - **OpenSSH client** (usually already installed)
 - **ssh-keygen** (usually already installed)
 
@@ -53,29 +53,38 @@ aws --version
 
 ---
 
-## 2) Configure AWS CLI (so `aws ...` commands work)
+## 2) AWS CLI tutorial (configure + verify)
 
-If you plan to run AWS CLI commands (like `aws sts get-caller-identity`), configure credentials + region:
+You only need AWS CLI if you want to run AWS commands from your Mac (for example: verifying your AWS identity or fetching EC2 details). If you don’t want to use AWS CLI, you can still do everything from the AWS Console.
 
-1) Run:
+### Step 2.1 — Verify AWS CLI works
+```bash
+aws --version
+```
+
+### Step 2.2 — Configure your AWS credentials + region
+Run:
 ```bash
 aws configure
 ```
 
-2) Enter:
+It will prompt for:
 - `AWS Access Key ID`
 - `AWS Secret Access Key`
 - `Default region name` (example: `us-east-1`)
 - `Default output format` (example: `json`)
 
-3) Verify it works:
+This writes configuration under `~/.aws/`.
+
+### Step 2.3 — Verify the configuration
+Run:
 ```bash
 aws sts get-caller-identity
 ```
 
-If it returns your AWS identity (account/ARN/user), setup is working.
+If it prints your AWS account/ARN/user identity, your AWS CLI setup is correct.
 
-> Tip: Don’t upload or commit your credentials. Prefer IAM users/roles configured securely for your environment.
+> Tip: Don’t commit credentials to Git. Keep `~/.aws/` private.
 
 ---
 
@@ -274,34 +283,3 @@ ssh -i ~/.ssh/my-ec2-key.pem ubuntu@YOUR_PUBLIC_IP
 ## Notes
 - Keep the `.pem` file private. Do **not** commit it to Git.
 - If you stop/recreate the instance, the public IP and/or host key may change; you may need to update `known_hosts`.
-
----
-
-## 12) Preview / “test” this README locally (macOS)
-
-A README isn’t executable code, so “testing” means verifying formatting and that commands are usable.
-
-### Option A — Preview in VS Code (recommended)
-1. Open `README.md` in VS Code
-2. Use **Markdown Preview**
-   - Press **Shift + Command + P**
-   - Type: `Markdown: Open Preview`
-   - Press Enter
-
-### Option B — Convert to HTML and open in a browser
-1. Install Pandoc:
-   ```bash
-   brew install pandoc
-   ```
-2. Convert:
-   ```bash
-   pandoc README.md -o README.html
-   ```
-3. Open:
-   ```bash
-   open README.html
-   ```
-
-### Option C — Validate shell commands (manual)
-- Copy/paste commands one at a time and run them.
-- Skip anything that uses AWS credentials until your AWS CLI is configured correctly.
