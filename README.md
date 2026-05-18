@@ -101,16 +101,33 @@ chmod 400 ~/.ssh/my-ec2-key.pem
 
 ### Why `chmod 400` matters
 SSH refuses to use private keys that are “too open” (readable by group/others).
-- `400` means: **read-only for you (the owner)** and **no permissions** for group/others.
-- If permissions are wrong, you may see errors like **“UNPROTECTED PRIVATE KEY FILE”** or **“Permission denied (publickey)”**.
+
+For private key files, `chmod` controls **who can read/write**:
+
+- `400` (`r--------`) → **read-only for you**, **no access** for group/others  
+  (common, and what this tutorial uses)
+
+- `600` (`rw-------`) → **read/write for you**, **no access** for group/others  
+  (also commonly accepted for SSH private keys)
+
+- `644` (`rw-r--r--`) → readable by everyone  
+  ❌ usually **not allowed** for SSH private keys
+
+- `777` (`rwxrwxrwx`) → full access for everyone  
+  ❌ definitely not allowed
+
+If permissions are wrong, you may see errors like **“UNPROTECTED PRIVATE KEY FILE”** or **“Permission denied (publickey)”**.
 
 Check permissions (CLI):
 ```bash
 ls -l ~/.ssh/my-ec2-key.pem
 ```
 
-What you want to see: the key should be readable only by you (no permissions for group/others).  
-Commonly this looks like `-r--------` (equivalent to `chmod 400`).
+What you want to see:
+- for `chmod 400`: typically `-r--------`
+- for `chmod 600`: typically `-rw-------`
+
+If you see permissions for group/others (like `r--r--`), run `chmod` to lock it down again.
 
 You can also double-check the SSH folder:
 ```bash
