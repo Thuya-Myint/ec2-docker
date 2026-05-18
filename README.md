@@ -22,10 +22,10 @@ This guide walks you through:
 
 ## 1) Install the necessary command-line tools (macOS)
 
-You’ll mainly need:
-- **AWS CLI** (optional but helpful)
-- **OpenSSH client** (usually already installed)
-- **ssh-keygen** (usually already installed)
+You mainly need:
+- **OpenSSH client** (`ssh`)
+- **ssh-keygen** (often preinstalled)
+- Basic shell commands used in this tutorial (`mkdir`, `mv`, `chmod`, `ls`)
 
 ### Check OpenSSH + ssh-keygen
 Run:
@@ -36,61 +36,11 @@ ssh-keygen -V
 
 If those commands exist, you’re good.
 
-### Install AWS CLI (recommended)
-
-#### Option A (Homebrew)
-```bash
-brew install awscli
-```
-
-#### Option B (manual install)
-- Download and install **AWS CLI v2** from: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
-
-Verify:
-```bash
-aws --version
-```
-
 ---
 
-## 2) AWS CLI tutorial (configure + verify)
+## 2) Create an EC2 instance (AWS Console)
 
-You only need AWS CLI if you want to run AWS commands from your Mac (for example: verifying your AWS identity or fetching EC2 details). If you don’t want to use AWS CLI, you can still do everything from the AWS Console.
-
-### Step 2.1 — Verify AWS CLI works
-```bash
-aws --version
-```
-
-### Step 2.2 — Configure your AWS credentials + region
-Run:
-```bash
-aws configure
-```
-
-It will prompt for:
-- `AWS Access Key ID`
-- `AWS Secret Access Key`
-- `Default region name` (example: `us-east-1`)
-- `Default output format` (example: `json`)
-
-This writes configuration under `~/.aws/`.
-
-### Step 2.3 — Verify the configuration
-Run:
-```bash
-aws sts get-caller-identity
-```
-
-If it prints your AWS account/ARN/user identity, your AWS CLI setup is correct.
-
-> Tip: Don’t commit credentials to Git. Keep `~/.aws/` private.
-
----
-
-## 3) Create an EC2 instance (AWS Console)
-
-### Step 3.1 — Launch an instance
+### Step 2.1 — Launch an instance
 1. Open the AWS Console
 2. Go to **EC2** → **Instances**
 3. Click **Launch instances**
@@ -98,10 +48,10 @@ If it prints your AWS account/ARN/user identity, your AWS CLI setup is correct.
    - **Amazon Linux**
    - **Ubuntu Server**
 
-### Step 3.2 — Choose instance type
+### Step 2.2 — Choose instance type
 - For learning/testing: `t2.micro` or `t3.micro` (often free tier)
 
-### Step 3.3 — Key pair (critical for SSH)
+### Step 2.3 — Key pair (critical for SSH)
 1. Click **Create new key pair**
 2. Name it (example: `my-ec2-key`)
 3. Select key format: **.pem**
@@ -110,19 +60,19 @@ If it prints your AWS account/ARN/user identity, your AWS CLI setup is correct.
 
 > If you lose the `.pem`, you can’t use it again. You’ll need a new key pair.
 
-### Step 3.4 — Network settings (must allow SSH)
+### Step 2.4 — Network settings (must allow SSH)
 In **Security group**, ensure an inbound rule includes:
 - **Type:** SSH
 - **Port:** 22
 - **Source:** your IP (recommended)  
   or `0.0.0.0/0` (less secure)
 
-### Step 3.5 — Launch
+### Step 2.5 — Launch
 Click **Launch instance** and wait until the instance is **Running**.
 
 ---
 
-## 4) Identify the SSH username (depends on AMI)
+## 3) Identify the SSH username (depends on AMI)
 
 Common defaults:
 - **Amazon Linux / Amazon Linux 2:** `ec2-user`
@@ -133,7 +83,7 @@ If unsure, open AWS Console and use the **Connect** instructions for your instan
 
 ---
 
-## 5) Move your `.pem` key to the right place on macOS
+## 4) Move your `.pem` key to the right place on macOS
 
 Assume your downloaded key is:
 `~/Downloads/my-ec2-key.pem`
@@ -150,9 +100,9 @@ chmod 400 ~/.ssh/my-ec2-key.pem
 ```
 
 ### Why `chmod 400` matters
-SSH refuses to use private keys that are “too open” (readable by group/others).  
+SSH refuses to use private keys that are “too open” (readable by group/others).
 - `400` means: **read-only for you (the owner)** and **no permissions** for group/others.
-- If permissions are wrong, you may get errors like **“UNPROTECTED PRIVATE KEY FILE”** or **“Permission denied (publickey)”**.
+- If permissions are wrong, you may see errors like **“UNPROTECTED PRIVATE KEY FILE”** or **“Permission denied (publickey)”**.
 
 Check permissions:
 ```bash
@@ -161,7 +111,7 @@ ls -l ~/.ssh/my-ec2-key.pem
 
 ---
 
-## 6) Get the EC2 public IP address
+## 5) Get the EC2 public IP address
 
 In AWS Console:
 - EC2 → Instances → select your instance
@@ -169,7 +119,7 @@ In AWS Console:
 
 ---
 
-## 7) SSH into the instance from macOS
+## 6) SSH into the instance from macOS
 
 ### SSH command template
 ```bash
@@ -194,7 +144,7 @@ If you see: “Are you sure you want to continue connecting?”
 
 ---
 
-## 8) Common SSH problems (and fixes)
+## 7) Common SSH problems (and fixes)
 
 ### Problem A — “Permission denied (publickey)”
 Check in order:
@@ -223,7 +173,7 @@ Then try SSH again.
 
 ---
 
-## 9) Useful Linux command-line tools (inside the EC2 instance)
+## 8) Useful Linux command-line tools (inside the EC2 instance)
 
 Commands vary by distro:
 
@@ -249,19 +199,7 @@ Useful basics:
 
 ---
 
-## 10) Optional: Use AWS CLI to fetch the public IP
-
-If you know your `INSTANCE_ID`:
-```bash
-aws ec2 describe-instances \
-  --instance-ids INSTANCE_ID \
-  --query 'Reservations[0].Instances[0].PublicIpAddress' \
-  --output text
-```
-
----
-
-## 11) Quick reference (copy/paste)
+## 9) Quick reference (copy/paste)
 
 1) Key permissions:
 ```bash
