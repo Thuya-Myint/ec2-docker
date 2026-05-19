@@ -224,7 +224,141 @@ Useful basics:
 
 ---
 
-## 9) Quick reference (copy/paste)
+## 9) Install Docker on the EC2 instance (step-by-step)
+
+After you’re SSH’d into the instance:
+
+### Option A — Amazon Linux / Amazon Linux 2
+
+1) Update packages
+```bash
+sudo yum update -y
+```
+
+2) Install Docker
+```bash
+sudo amazon-linux-extras install -y docker
+```
+
+3) Start Docker + enable on boot
+```bash
+sudo systemctl start docker
+sudo systemctl enable docker
+```
+
+4) (Optional) Run Docker without `sudo`
+```bash
+sudo usermod -aG docker $USER
+```
+Log out and back in (or reboot) so group membership applies.
+
+5) Verify
+```bash
+docker version
+docker run --rm hello-world
+```
+
+---
+
+### Option B — Ubuntu
+
+1) Update packages
+```bash
+sudo apt update -y
+```
+
+2) Install prerequisites
+```bash
+sudo apt install -y ca-certificates curl gnupg
+```
+
+3) Add Docker’s official GPG key
+```bash
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+```
+
+4) Add the Docker apt repository
+```bash
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+```
+
+5) Install Docker packages
+```bash
+sudo apt update -y
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+
+6) Start Docker + enable on boot
+```bash
+sudo systemctl start docker
+sudo systemctl enable docker
+```
+
+7) (Optional) Run Docker without `sudo`
+```bash
+sudo usermod -aG docker $USER
+```
+Log out and back in (or reboot).
+
+8) Verify
+```bash
+docker version
+docker run --rm hello-world
+```
+
+---
+
+### Option C — Debian
+
+1) Update packages
+```bash
+sudo apt update -y
+```
+
+2) Install prerequisites
+```bash
+sudo apt install -y ca-certificates curl gnupg
+```
+
+3) Add Docker’s official GPG key
+```bash
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+```
+
+4) Add the Docker apt repository
+```bash
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(. /etc/os-release && echo $VERSION_CODENAME) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+```
+
+5) Install Docker packages
+```bash
+sudo apt update -y
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+
+6) Start Docker + enable on boot
+```bash
+sudo systemctl start docker
+sudo systemctl enable docker
+```
+
+7) (Optional) Run Docker without `sudo`
+```bash
+sudo usermod -aG docker $USER
+```
+Log out and back in (or reboot).
+
+8) Verify
+```bash
+docker version
+docker run --rm hello-world
+```
+
+---
+
+## 10) Quick reference (copy/paste)
 
 1) Key permissions:
 ```bash
